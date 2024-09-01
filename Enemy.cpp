@@ -29,19 +29,20 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 void Enemy::Update() {
 
 	//移動
-	worldTransform_.translation_ += velocity_;
+	//worldTransform_.translation_ += velocity_;
 
 	walkTimer_ += 1.0f / 60.0f;
 
-	//回転アニメーション
-	worldTransform_.rotation_.x = std::sin(2 * std::numbers::pi_v<float> * walkTimer_ / kWalkMotionTime);
+	////回転アニメーション
+	//worldTransform_.rotation_.x = std::sin(2 * std::numbers::pi_v<float> * walkTimer_ / kWalkMotionTime);
 
 	// 行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw() {
-	model_->Draw(worldTransform_, *viewProjection_); }
+	model_->Draw(worldTransform_, *viewProjection_);
+}
 
 Vector3 Enemy::GetWorldPosition() { 
 	//ワールド座標を入れる変数

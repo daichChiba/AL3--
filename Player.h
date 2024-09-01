@@ -9,6 +9,7 @@
 
 class MapChipField;
 class Enemy;
+class Goal;
 
 enum class LRDirection { 
 	kRight,
@@ -90,10 +91,11 @@ public:
 	//AABBを取得
 	AABB GetAABB();
 
-	//衝突応答
-	void OnCollision(const Enemy* enemy);
+	// 衝突応答
+	void OnCollision(const Enemy* enemy); // 衝突応答
+	void OnCollision_Goal(const Goal* goal);
 
-	//デスフラグのgetter
+	// デスフラグのgetter
 	bool IsDead() const { return isDead_; }
 
 private:
@@ -148,5 +150,5 @@ private:
 
 	//デスフラグ
 	bool isDead_ = false;
-	
+
 };

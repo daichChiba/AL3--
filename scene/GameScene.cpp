@@ -103,8 +103,10 @@ void GameScene::Initialize() {
 
 	deathParticleModel_ = Model::CreateFromOBJ("deathParticle", true);
 
+
+
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/blocks_csv/blocks.csv");
 
 	GenerateBlocks();
 
@@ -119,17 +121,18 @@ void GameScene::Initialize() {
 	//enemy_ = new Enemy;
 	//enemy_->Initialize(enemyModel_, &viewProjection_, enemyPosition);
 
-	for (int32_t i = 0; i < 3; ++i) {
-		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = {10 + i * 4.0f, 1, 0};
-		newEnemy->Initialize(enemyModel_, &viewProjection_, enemyPosition);
+//	for (int32_t i = 0; i < 1; ++i) {
+	Enemy* newEnemy = new Enemy();
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(98, 18);
+	newEnemy->Initialize(enemyModel_, &viewProjection_, enemyPosition);
 
-		enemies_.push_back(newEnemy);
-	}
+	enemies_.push_back(newEnemy);
+//	}
 
 	//	仮の生成処理。後で消す。
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(deathParticleModel_, &viewProjection_, playerPosition);
+
 
 	// 　天球の生成
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
@@ -211,6 +214,10 @@ void GameScene::Draw() {
 		deathParticles_->Draw();
 	}
 
+	//if (isGoalParticle) {
+	//	goalParticles_->Draw();
+	//}
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -239,8 +246,8 @@ void GameScene::CheckAllCollisions() {
 		//自キャラの座標
 		aabb1 = player_->GetAABB();
 
-		//自キャラと敵弾すべての当たり判定
-		for (Enemy*enemy:enemies_) {
+		// 自キャラと敵弾すべての当たり判定
+		for (Enemy* enemy : enemies_) {
 			aabb2 = enemy->GetAABB();
 
 			// AABB同士の交差判定
@@ -250,8 +257,8 @@ void GameScene::CheckAllCollisions() {
 				// 敵弾の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
-
 		}
+
 	}
 	#pragma endregion
 
@@ -322,7 +329,6 @@ void GameScene::ChangePhase() {
 			deathParticles_->Initialize(deathParticleModel_, &viewProjection_, deathParticlesPosition);
 		}
 
-
 		break;
 	case GameScene::Phase::kDeath:
 		for (Enemy* enemy : enemies_) {
@@ -376,6 +382,56 @@ void GameScene::ChangePhase() {
 			finished_ = true;
 		}
 
+		break;
+
+	case GameScene::Phase::kGoal:
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
+
+		// ブロックの更新
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				// 04/24 02_02の更新から始める
+
+				if (!worldTransformBlock) {
+					continue;
+				}
+
+				worldTransformBlock->UpdateMatrix();
+			}
+		}
+
+
+		skydome_->Update();
+
+#ifdef _DEBUG
+		if (input_->TriggerKey(DIK_0)) {
+			isDebugCameraActive_ = !isDebugCameraActive_;
+		}
+#endif // DEBUG
+       // カメラの処理
+		if (isDebugCameraActive_) {
+			debugCamera_->Update();
+
+			// デバックカメラのビュー行列
+			viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+			// デバックカメラのプロジェクション行列
+			viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		} else {
+			cameraController_->Update();
+
+			// ビュープロジェクション行列の更新と転送
+			viewProjection_.matView = cameraController_->GetViewProjection().matView;
+			viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
+			// ビュープロジェクション行列の転送
+			viewProjection_.TransferMatrix();
+		}
+
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+
+			finished_ = true;
+		}
 		break;
 	}
 }

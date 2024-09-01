@@ -14,16 +14,11 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
-
-/// <summary>
-/// タイトルシーン
-/// </summary>
-class TitleScene {
+class DescriptionScene {
 public:
+	DescriptionScene();
 
-	TitleScene();
-
-	~TitleScene();
+	~DescriptionScene();
 
 	/// <summary>
 	/// 初期化
@@ -44,25 +39,21 @@ public:
 	bool IsFinished() const { return finished_; }
 
 private:
-	//終了フラグ
+	// 終了フラグ
 	bool finished_ = false;
 
 	Model* modelFont_ = nullptr;
-	Model* modelPlayer_ = nullptr;
-	Model* modelPush_ = nullptr;
+	Model* modelFontNumber_ = nullptr;
 
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
 	WorldTransform worldTransformFont_;
-	WorldTransform worldTransformPlayer_;
-	WorldTransform worldTransformPush_;
-
+	WorldTransform worldTransformFontNumber_;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	float timer_ = 0.0f;
-	static inline const float kMotionTime = 1.0f;
+
 };

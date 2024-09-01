@@ -1,4 +1,4 @@
-# Blender 4.1.1 MTL File: 'None'
+# Blender 4.1.1 MTL File: 'Clear.blend'
 # www.blender.org
 
 newmtl Material
@@ -9,4 +9,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:/Users/k023g/Desktop/Lessons/2024A/RS2/AL3_Resource/block.png
+map_Kd C:/Users/k023g/Desktop/Lessons/2024A/AL3/評価課題/DirectXGame/Resources/titleFont/white1x1.png

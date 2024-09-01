@@ -477,3 +477,4 @@ void Player::OnCollision(const Enemy* enemy) {
 	// デスフラグを立てる
 	isDead_ = true;
 }
+
